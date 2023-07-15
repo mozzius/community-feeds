@@ -19,6 +19,7 @@ const run = async () => {
       maybeInt(process.env.FEEDGEN_SUBSCRIPTION_RECONNECT_DELAY) ?? 3000,
     hostname,
     serviceDid,
+    handlesDatabase: definitelyStr(process.env.HANDLES_DATABASE),
   })
   await server.start()
   console.log(
@@ -28,6 +29,11 @@ const run = async () => {
 
 const maybeStr = (val?: string) => {
   if (!val) return undefined
+  return val
+}
+
+const definitelyStr = (val?: string) => {
+  if (!val) throw new Error('missing required env var')
   return val
 }
 
