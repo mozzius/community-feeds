@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import FeedGenerator from './server'
 
-import fetch from 'node-fetch'
+import { fetch } from 'undici'
 globalThis.fetch = fetch
 
 const run = async () => {
