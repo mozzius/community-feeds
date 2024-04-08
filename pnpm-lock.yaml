@@ -6,7 +6,7 @@ settings:
 
 dependencies:
   '@atproto/api':
-    specifier: ^0.6.20
+    specifier: ^0.6.24
     version: 0.6.24
   '@atproto/identity':
     specifier: ^0.2.1
