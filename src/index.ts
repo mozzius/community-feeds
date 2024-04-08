@@ -34,7 +34,7 @@ const run = async () => {
 
   // every 30 minutes, limit each domain to 1000 posts
   cron.schedule('*/30 * * * *', async () => {
-    const sql =neon(server.cfg.handlesDatabase)
+    const sql = neon(server.cfg.handlesDatabase)
 
     const res = await sql('SELECT name FROM "Domain"')
     const domains = res
@@ -48,7 +48,10 @@ const run = async () => {
       )
       const uris = posts.map(({ uri }) => uri as string)
       if (uris.length === 0) continue
-      await sql('DELETE FROM "Post" WHERE uri NOT IN ?', [uris])
+      await sql('DELETE FROM "Post" WHERE domain = ? AND uri NOT IN (?)', [
+        domain,
+        uris,
+      ])
     }
   })
 }
