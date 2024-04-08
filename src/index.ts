@@ -1,7 +1,10 @@
 import dotenv from 'dotenv'
 import FeedGenerator from './server'
+import cron from 'node-cron'
 
 import { fetch } from 'undici'
+import { neon } from '@neondatabase/serverless'
+// @ts-expect-error
 globalThis.fetch = fetch
 
 const run = async () => {
@@ -28,6 +31,26 @@ const run = async () => {
   console.log(
     `🤖 running feed generator at http://${server.cfg.listenhost}:${server.cfg.port}`,
   )
+
+  // every 30 minutes, limit each domain to 1000 posts
+  cron.schedule('*/30 * * * *', async () => {
+    const sql =neon(server.cfg.handlesDatabase)
+
+    const res = await sql('SELECT name FROM "Domain"')
+    const domains = res
+      .map(({ name }) => name as string)
+      .filter((name) => name !== 'localhost')
+
+    for (const domain of domains) {
+      const posts = await sql(
+        'SELECT uri FROM "Post" WHERE domain = ? ORDER BY "indexedAt" DESC LIMIT 1000',
+        [domain],
+      )
+      const uris = posts.map(({ uri }) => uri as string)
+      if (uris.length === 0) continue
+      await sql('DELETE FROM "Post" WHERE uri NOT IN ?', [uris])
+    }
+  })
 }
 
 const maybeStr = (val?: string) => {

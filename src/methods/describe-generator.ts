@@ -1,11 +1,13 @@
 import { Server } from '../lexicon'
 import { AppContext } from '../config'
 import { getAlgos } from '../algos'
-import { AtUri } from '@atproto/uri'
+import { AtUri } from '@atproto/syntax'
+import { neon } from '@neondatabase/serverless'
 
 export default function (server: Server, ctx: AppContext) {
   server.app.bsky.feed.describeFeedGenerator(async () => {
-    const algos = await getAlgos(ctx.cfg.handlesDatabase)
+    const sql = neon(ctx.cfg.handlesDatabase)
+    const algos = await getAlgos(sql)
     const feeds = algos.map(({ shortName }) => ({
       uri: AtUri.make(
         ctx.cfg.publisherDid,

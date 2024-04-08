@@ -1,4 +1,4 @@
-import { neon } from '@neondatabase/serverless'
+import { NeonQueryFunction } from '@neondatabase/serverless'
 
 import {
   QueryParams,
@@ -13,10 +13,8 @@ let domains: string[] = []
 let lastUpdated = 0
 
 export async function getAlgos(
-  connectionString: string,
+  sql: NeonQueryFunction<false, false>,
 ): Promise<{ shortName: string; handler: AlgoHandler }[]> {
-  const sql = neon(connectionString)
-
   if (Date.now() - lastUpdated > 1000 * 60 * 60) {
     lastUpdated = Date.now()
     const res = await sql('SELECT name FROM "Domain"')
@@ -43,8 +41,12 @@ export async function getAlgos(
         }
         const timeStr = new Date(parseInt(indexedAt, 10)).toISOString()
         builder = builder
-          .where('post.indexedAt', '<', timeStr)
-          .orWhere((qb) => qb.where('post.indexedAt', '=', timeStr))
+          .where((eb) =>
+            eb.or([
+              eb('post.indexedAt', '<', timeStr),
+              eb('post.indexedAt', '=', timeStr),
+            ]),
+          )
           .where('post.cid', '<', cid)
       }
       const res = await builder.execute()
