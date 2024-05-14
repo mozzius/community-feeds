@@ -1,10 +1,10 @@
 {
-  "name": "feed-generator",
+  "name": "community-feeds",
   "version": "1.0.0",
-  "description": "atproto feed generator starter kit",
+  "description": "atproto feed generator for community handles",
   "main": "index.js",
   "repository": "git@github.com:bluesky-social/feed-generator.git",
-  "author": "dholms <dtholmgren@gmail.com>",
+  "author": "samuel <mozzius@protonmail.com>",
   "license": "MIT",
   "scripts": {
     "publishFeed": "ts-node scripts/publishFeedGen.ts",
@@ -38,5 +38,5 @@
   "engines": {
     "node": ">=17.0.0"
   },
-  "packageManager": "pnpm@8.15.4+sha256.cea6d0bdf2de3a0549582da3983c70c92ffc577ff4410cbf190817ddc35137c2"
+  "packageManager": "pnpm@8.15.6+sha256.01c01eeb990e379b31ef19c03e9d06a14afa5250b82e81303f88721c99ff2e6f"
 }
